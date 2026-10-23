@@ -294,7 +294,7 @@ def upload_archive(s, manga_id, group_id, number, volume, title, official,
 
     stream = io.BytesIO(data) if isinstance(data, (bytes, bytearray)) else open(data, "rb")
     try:
-        offset, started = 0, time.time()
+        offset, started, shown = 0, time.time(), -1
         while offset < total:
             stream.seek(offset)
             chunk = stream.read(chunk_size)
@@ -325,9 +325,16 @@ def upload_archive(s, manga_id, group_id, number, volume, title, official,
                 offset = end + 1
             pct   = offset * 100 // total
             speed = offset / max(time.time() - started, 0.001)
-            print(f"\r  uploading {pct:3d}%  {format_size(offset)} / {format_size(total)}"
-                  f"  {format_size(speed)}/s   ", end="", flush=True)
-        print()
+            line  = (f"  uploading {pct:3d}%  {format_size(offset)} / {format_size(total)}"
+                     f"  {format_size(speed)}/s")
+            if sys.stdout.isatty():
+                print("\r" + line + "   ", end="", flush=True)
+            elif pct // 20 != shown or offset >= total:
+                # piped (e.g. release-updater.py reads line by line): one line per 20%
+                shown = pct // 20
+                print(line, flush=True)
+        if sys.stdout.isatty():
+            print()
     finally:
         stream.close()
 
