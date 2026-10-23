@@ -12,3 +12,6 @@ __pycache__/
 Thumbs.db
 .DS_Store
 *.bak_*
+
+# Local backfill lists (series names)
+backfill/

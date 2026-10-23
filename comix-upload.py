@@ -368,7 +368,7 @@ def parse_chapter_name(name):
     return (int(vol_m.group(1)) if vol_m else None), float(ch_m.group(1)), title
 
 
-def collect_folder(path, start=None, end=None, exclude=()):
+def collect_folder(path, start=None, end=None, exclude=(), only=None):
     """Chapter sub-folders and/or archives in path, sorted by chapter number."""
     if not os.path.isdir(path):
         raise ComixError(f"Folder not found: {path}")
@@ -382,6 +382,8 @@ def collect_folder(path, start=None, end=None, exclude=()):
             unparsed.append(e.name)
             continue
         if (start is not None and ch < start) or (end is not None and ch > end) or ch in exclude:
+            continue
+        if only is not None and ch not in only:
             continue
         out.append({"path": e.path, "is_dir": e.is_dir(), "volume": vol,
                     "chapter": ch, "title": title})
@@ -447,6 +449,8 @@ def main():
     p.add_argument("--start",   type=float, help="--folder: first chapter")
     p.add_argument("--end",     type=float, help="--folder: last chapter")
     p.add_argument("--exclude", type=float, nargs="+", default=[], help="--folder: chapters to skip")
+    p.add_argument("--chapters", type=float, nargs="+", default=None,
+                   help="--folder: upload only these chapter numbers")
     p.add_argument("--group",   type=int, help="group id to credit (default: group_id in config.ini, 0 = none)")
     p.add_argument("--official", action="store_true", help="mark as an official release")
     p.add_argument("--reupload", action="store_true",
@@ -520,7 +524,8 @@ def main():
             jobs = [{"path": args.zip, "is_dir": False, "volume": args.volume,
                      "chapter": args.chapter, "title": args.title}]
         elif args.folder:
-            jobs = collect_folder(args.folder, args.start, args.end, set(args.exclude))
+            jobs = collect_folder(args.folder, args.start, args.end, set(args.exclude),
+                                  set(args.chapters) if args.chapters else None)
         else:
             raise ComixError("Give --zip <archive> or --folder <chapters folder>.")
         if not jobs:
