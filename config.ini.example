@@ -1,0 +1,13 @@
+[comix]
+; Group to credit on every upload (the number in comix.to/groups/<id>). 0 = no group.
+group_id = 0
+
+; Where the login comes from:
+;   firefox = read the comix.to cookies from your Firefox profile (log in there once, tick "remember me")
+;   file    = read cookies_file (a Netscape cookies.txt or JSON cookie export)
+cookie_source = firefox
+cookies_file  = cookies.txt
+
+; Optional: a specific Firefox profile folder, and a User-Agent override.
+; firefox_profile = C:\Users\you\AppData\Roaming\Mozilla\Firefox\Profiles\xxxx.default-release
+; user_agent =

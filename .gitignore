@@ -1,0 +1,14 @@
+# Personal config, DO NOT COMMIT
+config.ini
+series.json
+cookies.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS
+Thumbs.db
+.DS_Store
+*.bak_*
