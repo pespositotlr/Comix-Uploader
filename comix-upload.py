@@ -464,9 +464,19 @@ def main():
         s    = make_session(cfg)
         user = whoami(s)
         print(dim(f"Logged in as {user['username']}"))
+        want = [v for v in (cfg.get("username"), cfg.get("user_id")) if v]
+        if want and not any(v in (user["username"], user["hashId"]) for v in want):
+            raise ComixError(f"Logged in as {user['username']} ({user['hashId']}), but config.ini "
+                             f"is set up for {' / '.join(want)}. Log in to the right account in Firefox.")
         if args.whoami:
             can = user.get("userAbilities", {}).get("createChapter")
             print(green("OK") + f"  {user['username']} ({user['hashId']}), can upload chapters: {can}")
+            if group_id:
+                group = api(s, "GET", f"/api/v1/groups/{group_id}")
+                print(f"  group {group_id}: {group['name']}"
+                      + (yellow(f"  (config.ini says {cfg['group_name']!r})")
+                         if cfg.get("group_name") and cfg["group_name"] != group["name"] else ""))
+            print(f"  {len(library)} series in {os.path.basename(args.library)}")
             return
 
         if args.list_uploads:

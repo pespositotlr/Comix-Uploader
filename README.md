@@ -26,8 +26,10 @@ New uploads go into comix.to's review queue (`pending`) before they're public.
    login cookie from Firefox's profile. (Chrome 130+ encrypts its cookies so they
    can only be read as admin, which is why Firefox is used.)
    Alternatively, export a `cookies.txt` for comix.to and set `cookie_source = file`.
-3. Copy `config.ini.example` to `config.ini` and set `group_id` to your group
-   (the number in `comix.to/groups/<id>`).
+3. Copy `config.ini.example` to `config.ini` and fill in:
+   - `username` / `user_id`: your comix.to account (the id is the `abc123` in `comix.to/u/abc123`).
+     Uploads are refused if Firefox is logged in to a different account.
+   - `group_id` / `group_name`: the group to credit (the number in `comix.to/groups/<id>`).
 4. Check it works:
    ```
    py comix-upload.py --whoami

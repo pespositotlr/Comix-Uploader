@@ -1,6 +1,13 @@
 [comix]
+; Your comix.to account: username and/or profile id (the "abc123" in comix.to/u/abc123).
+; If set, the tool refuses to upload when the browser is logged in to a different account.
+username =
+user_id  =
+
 ; Group to credit on every upload (the number in comix.to/groups/<id>). 0 = no group.
-group_id = 0
+; group_name is only used by --whoami to confirm it's the right group.
+group_id   = 0
+group_name =
 
 ; Where the login comes from:
 ;   firefox = read the comix.to cookies from your Firefox profile (log in there once, tick "remember me")
@@ -11,3 +18,5 @@ cookies_file  = cookies.txt
 ; Optional: a specific Firefox profile folder, and a User-Agent override.
 ; firefox_profile = C:\Users\you\AppData\Roaming\Mozilla\Firefox\Profiles\xxxx.default-release
 ; user_agent =
+
+; The series you upload to live in series.json (see series.json.example).
