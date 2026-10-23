@@ -544,6 +544,11 @@ def main():
             if job["title"]:
                 label += f" {job['title']}"
             prev = existing.get(ch)
+            if prev and prev["status"] == "initialized" and not args.dry_run:
+                # an upload that was cut off before finalize: remove it and start over
+                print(yellow(f"  {label}: removing unfinished upload {prev['id']}"))
+                api(s, "DELETE", f"/api/v1/user/uploads/{prev['id']}")
+                prev = None
             if prev and not args.reupload:
                 print(dim(f"  skip {label}: already uploaded ({prev['status']}, id {prev['id']}); "
                           f"--reupload replaces it"))
