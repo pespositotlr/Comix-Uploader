@@ -32,9 +32,11 @@ does NOT authenticate on its own (tested with and without "Bearer").
    {"manga_id":12345,"group_id":678,"number":1,"volume":1,"title":"...","is_official":false,"total_bytes":38000000}
    ```
    Optional: `"replace_chapter_id": <id>` to replace an existing upload's file.
-   Response: `{"upload_id":"11500000","chapter_id":11500000,"chunk_size":3145728,"total_bytes":...,"chunk_url":"/upload/chunk/11500000"}`
+   Response: `{"upload_id":"11500000","chapter_id":11500000,"chunk_size":3145728,"total_bytes":...,"chunk_url":"/upload/chunk/11500000","upload_token":"...","offset":0}`
+   (`upload_token` and `offset` added by the site on 2026-10-24.)
 2. `PUT {chunk_url}` once per chunk (3 MiB), raw bytes
    ```
+   Upload-Token: <upload_token from init>   (required since 2026-10-24, otherwise 403 "invalid upload token")
    Content-Type: application/octet-stream
    Content-Range: bytes 0-3145727/38000000
    ```

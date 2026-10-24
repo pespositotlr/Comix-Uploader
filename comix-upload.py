@@ -291,10 +291,12 @@ def upload_archive(s, manga_id, group_id, number, volume, title, official,
     upload_id  = init["upload_id"]
     chunk_url  = init["chunk_url"]
     chunk_size = int(init.get("chunk_size") or 3 << 20)
+    # since 2026-10-24 init also returns an upload_token that each chunk PUT must send
+    token_hdr  = {"Upload-Token": init["upload_token"]} if init.get("upload_token") else {}
 
     stream = io.BytesIO(data) if isinstance(data, (bytes, bytearray)) else open(data, "rb")
     try:
-        offset, started, shown = 0, time.time(), -1
+        offset, started, shown = int(init.get("offset") or 0), time.time(), -1
         while offset < total:
             stream.seek(offset)
             chunk = stream.read(chunk_size)
@@ -302,6 +304,7 @@ def upload_archive(s, manga_id, group_id, number, volume, title, official,
             for attempt in range(MAX_RETRIES + 1):
                 try:
                     r = s.put(SITE + chunk_url, data=chunk, timeout=300, headers={
+                        **token_hdr,
                         "Accept":        "application/json, text/plain, */*",
                         "Content-Type":  "application/octet-stream",
                         "Content-Range": f"bytes {offset}-{end}/{total}",
